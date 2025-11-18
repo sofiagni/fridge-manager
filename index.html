@@ -369,8 +369,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>🧊 Fridge Manager</h1>
-            <p class="subtitle">Controle de alimentos e datas de validade</p>
+            <h1>🧊 Gerenciamento da Nossa Geladeira 🐕‍🦺</h1>
+            <p class="subtitle">Um protótipo da Sofilda para o Gustávio</p>
         </header>
 
         <div class="input-section">
@@ -379,6 +379,11 @@
             <div class="form-group">
                 <label for="itemName">Nome do Alimento *</label>
                 <input type="text" id="itemName" placeholder="Ex: Leite integral, Frango congelado..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="entryDate">Quando foi feito/comprado? *</label>
+                <input type="date" id="entryDate" required>
             </div>
 
             <div class="form-row">
@@ -392,20 +397,23 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="category">Categoria</label>
-                <select id="category">
-                    <option value="">Selecionar categoria</option>
-                    <option value="Laticínios">Laticínios</option>
-                    <option value="Carnes">Carnes</option>
-                    <option value="Vegetais">Vegetais</option>
-                    <option value="Frutas">Frutas</option>
-                    <option value="Condimentos">Condimentos</option>
-                    <option value="Bebidas">Bebidas</option>
-                    <option value="Congelado">Congelado</option>
-                    <option value="Sobremesas">Sobremesas</option>
-                    <option value="Outros">Outros</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Categoria</label>
+                    <select id="category">
+                        <option value="">Selecionar categoria</option>
+                        <option value="Laticínios">Laticínios</option>
+                        <option value="Carnes">Carnes</option>
+                        <option value="Vegetais">Vegetais</option>
+                        <option value="Frutas">Frutas</option>
+                        <option value="Grãos">Grãos</option>
+                        <option value="Condimentos">Condimentos</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Congelado">Congelado</option>
+                        <option value="Sobremesas">Sobremesas</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
             </div>
 
             <div class="form-group">
@@ -424,7 +432,37 @@
                     <input type="text" id="searchInput" placeholder="🔍 Buscar alimento..." onkeyup="filterItems()">
                 </div>
 
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-12); margin-bottom: var(--space-16);">
+                    <select id="categoryFilter" onchange="filterItems()" style="width: 100%;">
+                        <option value="">Filtro: Todas categorias</option>
+                        <option value="Laticínios">Laticínios</option>
+                        <option value="Carnes">Carnes</option>
+                        <option value="Vegetais">Vegetais</option>
+                        <option value="Frutas">Frutas</option>
+                        <option value="Grãos">Grãos</option>
+                        <option value="Condimentos">Condimentos</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Congelado">Congelado</option>
+                        <option value="Sobremesas">Sobremesas</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                    <select id="statusFilter" onchange="filterItems()" style="width: 100%;">
+                        <option value="">Filtro: Todos status</option>
+                        <option value="ok">Em dia</option>
+                        <option value="expiring">Vencendo em breve</option>
+                        <option value="expired">Vencidos</option>
+                    </select>
+                </div>
+
                 <div id="itemsList"></div>
+
+                <div class="shopping-list">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-16);">
+                        <h2 style="margin: 0;">🛍️ Lista de Compras</h2>
+                        <button class="btn btn-small btn-danger" onclick="clearShoppingList()" style="display: ${loadShoppingList().length > 0 ? 'block' : 'none'};">Limpar</button>
+                    </div>
+                    <div id="shoppingListContent"></div>
+                </div>
             </div>
 
             <div class="stats">
@@ -467,10 +505,11 @@
             const expiryDate = document.getElementById('expiryDate').value;
             const quantity = document.getElementById('quantity').value.trim();
             const category = document.getElementById('category').value || 'Outros';
+            const entryDate = document.getElementById('entryDate').value;
             const notes = document.getElementById('notes').value.trim();
 
-            if (!name || !expiryDate) {
-                alert('Por favor, preencha nome e data de validade!');
+            if (!name || !expiryDate || !entryDate) {
+                alert('Por favor, preencha nome, data de validade e quando foi feito/comprado!');
                 return;
             }
 
@@ -481,6 +520,7 @@
                 expiryDate,
                 quantity,
                 category,
+                entryDate,
                 notes,
                 dateAdded: new Date().toISOString()
             };
@@ -493,6 +533,7 @@
             document.getElementById('expiryDate').value = '';
             document.getElementById('quantity').value = '';
             document.getElementById('category').value = '';
+            document.getElementById('entryDate').value = '';
             document.getElementById('notes').value = '';
             document.getElementById('itemName').focus();
         }
@@ -505,8 +546,63 @@
         }
 
         function markAsUsed(id) {
-            const items = loadItems().filter(item => item.id !== id);
-            saveItems(items);
+            const items = loadItems();
+            const item = items.find(i => i.id === id);
+            
+            if (item && confirm(`Deseja adicionar "${item.name}" à lista de compras?`)) {
+                addToShoppingList(item.name);
+            }
+            
+            const updatedItems = items.filter(i => i.id !== id);
+            saveItems(updatedItems);
+        }
+
+        function loadShoppingList() {
+            const stored = localStorage.getItem('shoppingList');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveShoppingList(items) {
+            localStorage.setItem('shoppingList', JSON.stringify(items));
+            renderShoppingList();
+        }
+
+        function addToShoppingList(itemName) {
+            const list = loadShoppingList();
+            if (!list.includes(itemName)) {
+                list.push(itemName);
+                saveShoppingList(list);
+                alert(`"${itemName}" adicionado à lista de compras! ✓`);
+            }
+        }
+
+        function removeFromShoppingList(itemName) {
+            const list = loadShoppingList().filter(item => item !== itemName);
+            saveShoppingList(list);
+        }
+
+        function renderShoppingList() {
+            const list = loadShoppingList();
+            const shoppingListDiv = document.getElementById('shoppingListContent');
+            
+            if (list.length === 0) {
+                shoppingListDiv.innerHTML = '<div class="empty-state"><p>Lista de compras vazia 🛍️</p></div>';
+                return;
+            }
+
+            shoppingListDiv.innerHTML = list.map(item => `
+                <div class="shopping-item">
+                    <div class="shopping-item-name">${item}</div>
+                    <button class="btn btn-small btn-danger" onclick="removeFromShoppingList('${item.replace(/'/g, "\\'")}')">✕ Remover</button>
+                </div>
+            `).join('');
+        }
+
+        function clearShoppingList() {
+            if (confirm('Tem certeza que deseja limpar a lista de compras?')) {
+                localStorage.setItem('shoppingList', JSON.stringify([]));
+                renderShoppingList();
+            }
         }
 
         function getStatusInfo(expiryDate) {
@@ -533,14 +629,23 @@
             const items = loadItems();
             const itemsList = document.getElementById('itemsList');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
 
-            const filtered = items.filter(item =>
-                item.name.toLowerCase().includes(searchTerm) ||
-                item.category.toLowerCase().includes(searchTerm)
-            );
+            const filtered = items.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
+                    item.category.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !categoryFilter || item.category === categoryFilter;
+                
+                const statusInfo = getStatusInfo(item.expiryDate);
+                const matchesStatus = !statusFilter || statusInfo.status === statusFilter;
+                
+                return matchesSearch && matchesCategory && matchesStatus;
+            });
 
             if (filtered.length === 0) {
-                itemsList.innerHTML = '<div class="empty-state"><p>Nenhum alimento registrado 🛒</p></div>';
+                itemsList.innerHTML = '<div class="empty-state"><p>Nenhum alimento encontrado 🛒</p></div>';
                 return;
             }
 
@@ -554,7 +659,8 @@
                         <div class="item-content">
                             <div class="item-name">${item.name}</div>
                             <div class="item-details">
-                                📅 ${formatDate(item.expiryDate)}
+                                📅 Validade: ${formatDate(item.expiryDate)}
+                                ${item.entryDate ? ` • Entry: ${formatDate(item.entryDate)}` : ''}
                                 ${item.quantity ? ` • ${item.quantity}` : ''}
                                 ${item.category ? ` • ${item.category}` : ''}
                             </div>
@@ -602,8 +708,13 @@
 
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
+            // Pré-preenchimento da data de entry com data atual
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('entryDate').value = today;
+            
             renderItems();
             updateStats();
+            renderShoppingList();
         });
 
         // Permitir Enter para adicionar item
