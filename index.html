@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fridge Manager - Controle de Geladeira</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23000' width='180' height='180'/><text x='50%' y='50%' font-size='120' dominant-baseline='middle' text-anchor='middle'>🍱</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><text x='50%' y='50%' font-size='120' dominant-baseline='middle' text-anchor='middle'>🍱</text></svg>">
     <style>
         :root {
             --color-white: #ffffff;
@@ -465,7 +467,7 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <h1>🧊 Gerenciamento da Nossa Geladeira 🐕‍🦺</h1>
+                <h1>🧊 Gerenciamento da Geladeira 🐕</h1>
                 <p class="subtitle">Um protótipo da Sofilda pro Gustávio ❤️</p>
             </div>
         </header>
@@ -474,7 +476,7 @@
             <h2 style="margin-top: 0; font-size: 18px;">Adicionar Alimento</h2>
             
             <div class="form-group">
-                <label for="itemName">Nome do Alimento *</label>
+                <label for="itemName">Nome do Item: *</label>
                 <input type="text" id="itemName" placeholder="Ex: Leite integral, Frango congelado..." required>
             </div>
 
@@ -485,18 +487,18 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="expiryDate">Data de Validade *</label>
+                    <label for="expiryDate">Data de Validade: *</label>
                     <input type="date" id="expiryDate" required>
                 </div>
                 <div class="form-group">
-                    <label for="quantity">Quantidade</label>
-                    <input type="text" id="quantity" placeholder="Ex: 1L, 500g, 2 unidades">
+                    <label for="quantity">Quantidade:</label>
+                    <input type="text" id="quantity" placeholder="Ex: 1L, 500g, 2 unidades...">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="category">Categoria</label>
+                    <label for="category">Categoria:</label>
                     <select id="category">
                         <option value="">Selecionar categoria</option>
                         <option value="Laticínios">Laticínios</option>
@@ -511,7 +513,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="isFrozen">Alimento congelado?</label>
+                    <label for="isFrozen">Item congelado?</label>
                     <select id="isFrozen">
                         <option value="">Selecionar</option>
                         <option value="sim">Sim</option>
@@ -521,11 +523,11 @@
             </div>
 
             <div class="form-group">
-                <label for="notes">Observações</label>
-                <textarea id="notes" placeholder="Ex: Aberto em 15/11, Já usado 1/4..."></textarea>
+                <label for="notes">Alguma observação?</label>
+                <textarea id="notes" placeholder="Ex: Aberto em 15/11, lembrar de descongelar antes..."></textarea>
             </div>
 
-            <button class="btn btn-primary" onclick="addItem()">+ Adicionar à Geladeira</button>
+            <button class="btn btn-primary" onclick="addItem()">➕ Adicionar à Geladeira</button>
         </div>
 
         <div class="items-section">
@@ -533,12 +535,12 @@
                 <h2>Itens na Geladeira</h2>
                 
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="🔍 Buscar alimento..." onkeyup="filterItems()">
+                    <input type="text" id="searchInput" placeholder="🔍 Buscar item" onkeyup="filterItems()">
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-12); margin-bottom: var(--space-16);">
                     <select id="categoryFilter" onchange="filterItems()" style="width: 100%;">
-                        <option value="">Filtro: Todas categorias</option>
+                        <option value="">Filtro: Todas as categorias</option>
                         <option value="Laticínios">Laticínios</option>
                         <option value="Carnes">Carnes</option>
                         <option value="Vegetais">Vegetais</option>
@@ -550,7 +552,7 @@
                         <option value="Outros">Outros</option>
                     </select>
                     <select id="statusFilter" onchange="filterItems()" style="width: 100%;">
-                        <option value="">Filtro: Todos status</option>
+                        <option value="">Filtro: Todos os status</option>
                         <option value="ok">Em dia</option>
                         <option value="expiring">Vencendo em breve</option>
                         <option value="expired">Vencidos</option>
@@ -593,7 +595,7 @@
                 </div>
                 
                 <button class="btn btn-recipe" onclick="suggestRecipe()">
-                    🍳 Sugestão de Receita
+                    ✨ Sugestão de Receita
                 </button>
             </div>
         </div>
