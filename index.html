@@ -473,7 +473,7 @@
         </header>
 
         <div class="input-section">
-            <h2 style="margin-top: 0; font-size: 18px;">Adicionar Alimento</h2>
+            <h2 style="margin-top: 0; font-size: 18px;">🆕 Novo Item</h2>
             
             <div class="form-group">
                 <label for="itemName">Nome do Item: *</label>
@@ -527,7 +527,7 @@
                 <textarea id="notes" placeholder="Ex: Aberto em 15/11, lembrar de descongelar antes..."></textarea>
             </div>
 
-            <button class="btn btn-primary" onclick="addItem()">➕ Adicionar à Geladeira</button>
+            <button class="btn btn-primary" onclick="addItem()">+ Adicionar à Geladeira</button>
         </div>
 
         <div class="items-section">
@@ -674,7 +674,7 @@
                 item.quantity = newQuantity.trim();
                 saveItems(items);
                 
-                if (confirm(`Deseja adicionar \"${item.name}\" à lista de compras?`)) {
+                if (confirm(`Precisamos adicionar \"${item.name}\" à lista de compras?`)) {
                     addToShoppingList(item.name);
                 }
             }
@@ -684,7 +684,7 @@
             const items = loadItems();
             const item = items.find(i => i.id === id);
             
-            if (item && confirm(`Deseja adicionar \"${item.name}\" à lista de compras?`)) {
+            if (item && confirm(`Precisamos adicionar \"${item.name}\" à lista de compras?`)) {
                 addToShoppingList(item.name);
             }
             
