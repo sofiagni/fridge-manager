@@ -77,6 +77,13 @@
             margin-bottom: var(--space-32);
             padding-bottom: var(--space-20);
             border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-content {
+            flex: 1;
         }
 
         h1 {
@@ -91,6 +98,31 @@
             color: var(--color-text-secondary);
             font-size: 16px;
             font-weight: 400;
+        }
+
+        .theme-toggle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--color-gray-200);
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.2, 0, 0.13, 1);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .theme-toggle:hover {
+            background: var(--color-gray-300);
+            box-shadow: var(--shadow-md);
+            transform: scale(1.05);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
         }
 
         .input-section {
@@ -453,8 +485,11 @@
 <body>
     <div class="container">
         <header>
-            <h1>🧊 Gerenciamento da Nossa Geladeira 🐕‍🦺</h1>
-            <p class="subtitle">Um protótipo da Sofilda para o Gustávio</p>
+            <div class="header-content">
+                <h1>🧊 Gerenciamento da Nossa Geladeira 🐕‍🦺</h1>
+                <p class="subtitle">Um protótipo da Sofilda para o Gustávio</p>
+            </div>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
         </header>
 
         <div class="input-section">
@@ -812,8 +847,39 @@
             document.getElementById('goodCount').textContent = good;
         }
 
+        // Gerenciamento do tema
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            setTheme(savedTheme);
+        }
+
+        function setTheme(theme) {
+            const html = document.documentElement;
+            const toggle = document.getElementById('themeToggle');
+            
+            if (theme === 'dark') {
+                html.setAttribute('data-theme', 'dark');
+                toggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                html.removeAttribute('data-theme');
+                toggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar tema
+            initTheme();
+            
             // Pré-preenchimento da data de entry com data atual
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('entryDate').value = today;
