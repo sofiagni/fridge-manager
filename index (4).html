@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fridge Manager - Controle de Geladeira</title>
+    <style>
+        :root {
+            --color-white: #ffffff;
+            --color-background: #0a0a0a;
+            --color-gray-50: #1a1a1a;
+            --color-gray-100: #2a2a2a;
+            --color-gray-200: #3a3a3a;
+            --color-gray-300: #4a4a4a;
+            --color-gray-400: #5a5a5a;
+            --color-gray-500: #7a7a7a;
+            --color-gray-600: #8a8a8a;
+            --color-gray-700: #a0a0a0;
+            --color-text: #ffffff;
+            --color-text-secondary: #a0a0a0;
+            
+            --color-blue-500: #0071e3;
+            --color-blue-600: #0077ed;
+            --color-blue-hover: #0077ed;
+            --color-primary: #0071e3;
+            --color-primary-hover: #0077ed;
+            
+            --color-green-500: #34c759;
+            --color-orange-500: #ff9500;
+            --color-red-500: #ff3b30;
+            
+            --color-success: #34c759;
+            --color-warning: #ff9500;
+            --color-error: #ff3b30;
+
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            
+            --radius-base: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            
+            --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: var(--space-20);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', Roboto, sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+            padding-bottom: var(--space-20);
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        h1 {
+            margin: 0 0 var(--space-12) 0;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--color-text);
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .input-section {
+            background: var(--color-gray-50);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-24);
+            border: none;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s cubic-bezier(0.2, 0, 0.13, 1);
+        }
+
+        .input-section:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-16);
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: var(--space-8);
+            color: var(--color-text);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: var(--space-12) var(--space-16);
+            border: 1px solid var(--color-gray-300);
+            border-radius: var(--radius-base);
+            font-size: 16px;
+            font-family: inherit;
+            color: var(--color-text);
+            background: var(--color-gray-100);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:hover, select:hover, textarea:hover {
+            border-color: var(--color-gray-400);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-16);
+        }
+
+        .btn {
+            padding: var(--space-12) var(--space-20);
+            border: none;
+            border-radius: var(--radius-base);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0.13, 1);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+            width: 100%;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:active {
+            background: #0064c8;
+        }
+
+        .btn-small {
+            padding: var(--space-8) var(--space-16);
+            font-size: 13px;
+            font-weight: 500;
+            width: auto;
+            border-radius: var(--radius-base);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .btn-small:hover {
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-danger {
+            background: var(--color-error);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff453a;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #30b84b;
+        }
+
+        .items-section {
+            display: flex;
+            gap: var(--space-16);
+            margin-bottom: var(--space-20);
+        }
+
+        .items-list {
+            flex: 1;
+            background: var(--color-gray-50);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            border: none;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s cubic-bezier(0.2, 0, 0.13, 1);
+        }
+
+        .items-list:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .items-list h2 {
+            margin: 0 0 var(--space-20) 0;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .search-box {
+            margin-bottom: var(--space-16);
+        }
+
+        .search-box input {
+            width: 100%;
+        }
+
+        .item {
+            background: var(--color-gray-50);
+            padding: var(--space-16);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-12);
+            border-left: 3px solid var(--color-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--space-12);
+            transition: all 0.2s cubic-bezier(0.2, 0, 0.13, 1);
+        }
+
+        .item:hover {
+            background: var(--color-white);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .item.expiring-soon {
+            border-left-color: var(--color-warning);
+            background: rgba(255, 149, 0, 0.06);
+        }
+
+        .item.expired {
+            border-left-color: var(--color-error);
+            background: rgba(255, 59, 48, 0.06);
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: var(--space-4);
+        }
+
+        .item-details {
+            font-size: 13px;
+            color: var(--color-slate-500);
+            margin-bottom: var(--space-4);
+        }
+
+        .item-notes {
+            font-size: 12px;
+            color: var(--color-slate-500);
+            font-style: italic;
+            margin-top: var(--space-8);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: var(--space-4) var(--space-8);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: var(--space-8);
+        }
+
+        .status-ok {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--color-success);
+        }
+
+        .status-warning {
+            background: rgba(168, 75, 47, 0.2);
+            color: var(--color-warning);
+        }
+
+        .status-expired {
+            background: rgba(255, 84, 89, 0.2);
+            color: var(--color-error);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: var(--space-8);
+            margin-top: var(--space-12);
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .stats {
+            width: 280px;
+            background: var(--color-gray-50);
+            padding: var(--space-24);
+            border-radius: var(--radius-lg);
+            border: none;
+            box-shadow: var(--shadow-sm);
+            height: fit-content;
+            position: sticky;
+            top: var(--space-16);
+            transition: box-shadow 0.3s cubic-bezier(0.2, 0, 0.13, 1);
+        }
+
+        .stats:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .stats h3 {
+            margin: 0 0 var(--space-20) 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--space-16) 0;
+            border-bottom: 1px solid var(--color-gray-200);
+        }
+
+        .btn-recipe {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #0064c8 100%);
+            color: white;
+            width: 100%;
+            box-shadow: var(--shadow-xs);
+            margin-top: var(--space-20);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .btn-recipe:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .btn-recipe:active {
+            transform: translateY(0);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            font-size: 15px;
+            color: var(--color-text-secondary);
+            font-weight: 400;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-24);
+            color: var(--color-slate-500);
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .items-section {
+                flex-direction: column;
+            }
+
+            .stats {
+                width: 100%;
+                position: static;
+            }
+
+            header {
+                margin-bottom: var(--space-16);
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: var(--space-12);
+            }
+
+            .input-section {
+                padding: var(--space-16);
+            }
+
+            .items-list {
+                padding: var(--space-16);
+            }
+
+            .item {
+                flex-direction: column;
+            }
+
+            .item-actions {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>🧊 Gerenciamento da Nossa Geladeira 🐕‍🦺</h1>
+                <p class="subtitle">Um protótipo da Sofilda pro Gustávio ❤️</p>
+            </div>
+        </header>
+
+        <div class="input-section">
+            <h2 style="margin-top: 0; font-size: 18px;">Adicionar Alimento</h2>
+            
+            <div class="form-group">
+                <label for="itemName">Nome do Alimento *</label>
+                <input type="text" id="itemName" placeholder="Ex: Leite integral, Frango congelado..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="entryDate">Quando foi feito/comprado? *</label>
+                <input type="date" id="entryDate" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="expiryDate">Data de Validade *</label>
+                    <input type="date" id="expiryDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantidade</label>
+                    <input type="text" id="quantity" placeholder="Ex: 1L, 500g, 2 unidades">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Categoria</label>
+                    <select id="category">
+                        <option value="">Selecionar categoria</option>
+                        <option value="Laticínios">Laticínios</option>
+                        <option value="Carnes">Carnes</option>
+                        <option value="Vegetais">Vegetais</option>
+                        <option value="Frutas">Frutas</option>
+                        <option value="Grãos">Grãos</option>
+                        <option value="Condimentos">Condimentos</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Sobremesas">Sobremesas</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="isFrozen">Alimento congelado?</label>
+                    <select id="isFrozen">
+                        <option value="">Selecionar</option>
+                        <option value="sim">Sim</option>
+                        <option value="não" selected>Não</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Observações</label>
+                <textarea id="notes" placeholder="Ex: Aberto em 15/11, Já usado 1/4..."></textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="addItem()">+ Adicionar à Geladeira</button>
+        </div>
+
+        <div class="items-section">
+            <div class="items-list">
+                <h2>Itens na Geladeira</h2>
+                
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="🔍 Buscar alimento..." onkeyup="filterItems()">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-12); margin-bottom: var(--space-16);">
+                    <select id="categoryFilter" onchange="filterItems()" style="width: 100%;">
+                        <option value="">Filtro: Todas categorias</option>
+                        <option value="Laticínios">Laticínios</option>
+                        <option value="Carnes">Carnes</option>
+                        <option value="Vegetais">Vegetais</option>
+                        <option value="Frutas">Frutas</option>
+                        <option value="Grãos">Grãos</option>
+                        <option value="Condimentos">Condimentos</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Sobremesas">Sobremesas</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                    <select id="statusFilter" onchange="filterItems()" style="width: 100%;">
+                        <option value="">Filtro: Todos status</option>
+                        <option value="ok">Em dia</option>
+                        <option value="expiring">Vencendo em breve</option>
+                        <option value="expired">Vencidos</option>
+                    </select>
+                    <select id="frozenFilter" onchange="filterItems()" style="width: 100%;">
+                        <option value="">Filtro: Congelado?</option>
+                        <option value="sim">Sim</option>
+                        <option value="não">Não</option>
+                    </select>
+                </div>
+
+                <div id="itemsList"></div>
+
+                <div class="shopping-list">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-16);">
+                        <h2 style="margin: 0;">🛍️ Lista de Compras</h2>
+                        <button class="btn btn-small btn-danger" onclick="clearShoppingList()" style="display: ${loadShoppingList().length > 0 ? 'block' : 'none'};">Limpar</button>
+                    </div>
+                    <div id="shoppingListContent"></div>
+                </div>
+            </div>
+
+            <div class="stats">
+                <h3>📊 Resumo</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Total de itens</span>
+                    <span class="stat-value" id="totalItems">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Vencidos</span>
+                    <span class="stat-value" style="color: var(--color-error);" id="expiredCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Vencendo em breve</span>
+                    <span class="stat-value" style="color: var(--color-warning);" id="expiringCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Em dia</span>
+                    <span class="stat-value" style="color: var(--color-success);" id="goodCount">0</span>
+                </div>
+                
+                <button class="btn btn-recipe" onclick="suggestRecipe()">
+                    🍳 Sugestão de Receita
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gerenciamento de dados no localStorage
+        function loadItems() {
+            const stored = localStorage.getItem('fridgeItems');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveItems(items) {
+            localStorage.setItem('fridgeItems', JSON.stringify(items));
+            renderItems();
+            updateStats();
+        }
+
+        function addItem() {
+            const name = document.getElementById('itemName').value.trim();
+            const expiryDate = document.getElementById('expiryDate').value;
+            const quantity = document.getElementById('quantity').value.trim();
+            const category = document.getElementById('category').value || 'Outros';
+            const entryDate = document.getElementById('entryDate').value;
+            const isFrozen = document.getElementById('isFrozen').value || 'não';
+            const notes = document.getElementById('notes').value.trim();
+
+            if (!name || !expiryDate || !entryDate) {
+                alert('Por favor, preencha nome, data de validade e quando foi feito/comprado!');
+                return;
+            }
+
+            const items = loadItems();
+            const item = {
+                id: Date.now(),
+                name,
+                expiryDate,
+                quantity,
+                category,
+                entryDate,
+                isFrozen,
+                notes,
+                dateAdded: new Date().toISOString()
+            };
+
+            items.push(item);
+            saveItems(items);
+
+            // Limpar formulário
+            document.getElementById('itemName').value = '';
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('quantity').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('isFrozen').value = '';
+            document.getElementById('entryDate').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('itemName').focus();
+        }
+
+        function deleteItem(id) {
+            if (confirm('Tem certeza que deseja remover este item?')) {
+                const items = loadItems().filter(item => item.id !== id);
+                saveItems(items);
+            }
+        }
+
+        function editQuantity(id, currentQuantity) {
+            const items = loadItems();
+            const item = items.find(i => i.id === id);
+            
+            if (!item) return;
+            
+            const newQuantity = prompt(`Editar quantidade para "${item.name}":\n\nQuantidade atual: ${currentQuantity}`, currentQuantity);
+            
+            if (newQuantity !== null && newQuantity.trim() !== '') {
+                item.quantity = newQuantity.trim();
+                saveItems(items);
+                
+                if (confirm(`Deseja adicionar \"${item.name}\" à lista de compras?`)) {
+                    addToShoppingList(item.name);
+                }
+            }
+        }
+
+        function markAsUsed(id) {
+            const items = loadItems();
+            const item = items.find(i => i.id === id);
+            
+            if (item && confirm(`Deseja adicionar \"${item.name}\" à lista de compras?`)) {
+                addToShoppingList(item.name);
+            }
+            
+            const updatedItems = items.filter(i => i.id !== id);
+            saveItems(updatedItems);
+        }
+
+        function loadShoppingList() {
+            const stored = localStorage.getItem('shoppingList');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveShoppingList(items) {
+            localStorage.setItem('shoppingList', JSON.stringify(items));
+            renderShoppingList();
+        }
+
+        function addToShoppingList(itemName) {
+            const list = loadShoppingList();
+            if (!list.includes(itemName)) {
+                list.push(itemName);
+                saveShoppingList(list);
+                alert(`\"${itemName}\" adicionado à lista de compras! ✓`);
+            }
+        }
+
+        function removeFromShoppingList(itemName) {
+            const list = loadShoppingList().filter(item => item !== itemName);
+            saveShoppingList(list);
+        }
+
+        function renderShoppingList() {
+            const list = loadShoppingList();
+            const shoppingListDiv = document.getElementById('shoppingListContent');
+            
+            if (list.length === 0) {
+                shoppingListDiv.innerHTML = '<div class="empty-state"><p>Lista de compras vazia 🛍️</p></div>';
+                return;
+            }
+
+            shoppingListDiv.innerHTML = list.map(item => `
+                <div class="shopping-item">
+                    <div class="shopping-item-name">${item}</div>
+                    <button class="btn btn-small btn-danger" onclick="removeFromShoppingList('${item.replace(/'/g, "\\'")}')">&times; Remover</button>
+                </div>
+            `).join('');
+        }
+
+        function clearShoppingList() {
+            if (confirm('Tem certeza que deseja limpar a lista de compras?')) {
+                localStorage.setItem('shoppingList', JSON.stringify([]));
+                renderShoppingList();
+            }
+        }
+
+        function getStatusInfo(expiryDate) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const expiry = new Date(expiryDate + 'T00:00:00');
+            const daysLeft = Math.floor((expiry - today) / (1000 * 60 * 60 * 24));
+
+            if (daysLeft < 0) {
+                return { status: 'expired', label: `Vencido há ${Math.abs(daysLeft)} dias`, class: 'expired', badge: 'status-expired' };
+            } else if (daysLeft <= 3) {
+                return { status: 'expiring', label: `Vence em ${daysLeft} dias`, class: 'expiring-soon', badge: 'status-warning' };
+            } else {
+                return { status: 'ok', label: `Vence em ${daysLeft} dias`, class: '', badge: 'status-ok' };
+            }
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        function renderItems() {
+            const items = loadItems();
+            const itemsList = document.getElementById('itemsList');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const frozenFilter = document.getElementById('frozenFilter').value;
+
+            const filtered = items.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
+                    item.category.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !categoryFilter || item.category === categoryFilter;
+                
+                const statusInfo = getStatusInfo(item.expiryDate);
+                const matchesStatus = !statusFilter || statusInfo.status === statusFilter;
+                
+                const matchesFrozen = !frozenFilter || item.isFrozen === frozenFilter;
+                
+                return matchesSearch && matchesCategory && matchesStatus && matchesFrozen;
+            });
+
+            if (filtered.length === 0) {
+                itemsList.innerHTML = '<div class="empty-state"><p>Nenhum alimento encontrado 🛒</p></div>';
+                return;
+            }
+
+            // Ordenar por data de validade (próximos primeiro)
+            filtered.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+
+            itemsList.innerHTML = filtered.map(item => {
+                const statusInfo = getStatusInfo(item.expiryDate);
+                return `
+                    <div class="item ${statusInfo.class}">
+                        <div class="item-content">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-details">
+                                📅 Validade: ${formatDate(item.expiryDate)}
+                                ${item.entryDate ? ` • Entry: ${formatDate(item.entryDate)}` : ''}
+                                ${item.quantity ? ` • ${item.quantity}` : ''}
+                                ${item.category ? ` • ${item.category}` : ''}
+                                ${item.isFrozen ? ` • ❄️ Congelado: ${item.isFrozen}` : ''}
+                            </div>
+                            ${item.notes ? `<div class="item-notes">Nota: ${item.notes}</div>` : ''}
+                            <div class="status-badge ${statusInfo.badge}">${statusInfo.label}</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn btn-small btn-success" onclick="markAsUsed(${item.id})">✓ Usado</button>
+                            <button class="btn btn-small" style="background: var(--color-primary); color: white;" onclick="editQuantity(${item.id}, '${item.quantity.replace(/'/g, "\\'")}')">✏️ Alterar</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteItem(${item.id})">✕ Remover</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterItems() {
+            renderItems();
+        }
+
+        function updateStats() {
+            const items = loadItems();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let expired = 0, expiring = 0, good = 0;
+
+            items.forEach(item => {
+                const expiry = new Date(item.expiryDate + 'T00:00:00');
+                const daysLeft = Math.floor((expiry - today) / (1000 * 60 * 60 * 24));
+
+                if (daysLeft < 0) {
+                    expired++;
+                } else if (daysLeft <= 3) {
+                    expiring++;
+                } else {
+                    good++;
+                }
+            });
+
+            document.getElementById('totalItems').textContent = items.length;
+            document.getElementById('expiredCount').textContent = expired;
+            document.getElementById('expiringCount').textContent = expiring;
+            document.getElementById('goodCount').textContent = good;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            // Pré-preenchimento da data de entry com data atual
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('entryDate').value = today;
+            
+            // Pré-preenchimento da data de validade (1 semana à frente)
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 7);
+            document.getElementById('expiryDate').value = expiryDate.toISOString().split('T')[0];
+            
+            renderItems();
+            updateStats();
+            renderShoppingList();
+        });
+
+        function suggestRecipe() {
+            const items = loadItems();
+            
+            if (items.length === 0) {
+                alert('Adicione alimentos à geladeira primeiro! 🧊');
+                return;
+            }
+            
+            // Pegar nomes dos itens
+            const itemNames = items.map(item => item.name).join(', ');
+            
+            // Criar a query de busca
+            const searchQuery = `Tenho os seguintes itens na minha geladeira e preciso de ajuda para encontrar receitas que os utilizem: ${itemNames}`;
+            
+            // Codificar para URL
+            const encodedQuery = encodeURIComponent(searchQuery);
+            
+            // Abrir no Google
+            window.open(`https://www.google.com/search?q=${encodedQuery}`, '_blank');
+        }
+
+        // Permitir Enter para adicionar item
+        document.getElementById('itemName').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('expiryDate').focus();
+            }
+        });
+
+        document.getElementById('expiryDate').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addItem();
+            }
+        });
+    </script>
+</body>
+</html>
